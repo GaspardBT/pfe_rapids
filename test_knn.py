@@ -1,11 +1,12 @@
 import time
 
-import cudf, cuml
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split, KFold
 import sklearn.neighbors
 
+
+import cudf, cuml
 from cuml.neighbors import KNeighborsClassifier, NearestNeighbors
 
 print('cuML version', cuml.__version__)
@@ -53,7 +54,7 @@ for k in range(3, 6):
         knn.fit(train.iloc[idxT, 1:], train.iloc[idxT, 0])
 
         oof[idxV] = knn.predict(train.iloc[idxV, 1:])
-        acc = (oof[idxV] == train.iloc[idxV, 0].to_array()).sum() / len(idxV)
+        acc = (oof[idxV] == np.array(train.iloc[idxV, 0])).sum() / len(idxV)
         print(' fold =', i, ' acc =', acc, ' in ', time.time() - time_start_2)
     acc = (oof == train.iloc[:, 0].to_array()).sum() / len(train)
     print(' OOF with k =', k, 'ACC =', acc, ' in ', time.time() - time_start_1)
