@@ -29,7 +29,7 @@ for k in range(3, 6):
         knn.fit(train.iloc[idxT, 1:], train.iloc[idxT, 0])
         # Better to use knn.predict() but cuML v0.11.0 has bug
         y_hat = knn.predict(train.iloc[idxV,1:])
-        oof[idxV] = y_hat
+        oof[idxV] = y_hat.to_array()
         # y_hat_p = knn.predict_proba(train.iloc[idxV, 1:])
         # oof[idxV] = y_hat_p.to_pandas().values.argmax(axis=1)
         acc = (oof[idxV] == train.iloc[idxV, 0].to_array()).sum() / len(idxV)
