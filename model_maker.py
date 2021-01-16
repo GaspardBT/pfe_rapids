@@ -12,7 +12,7 @@ def model_trainer(k=3):
     knn = KNeighborsClassifier(n_neighbors=k)
     knn.fit(train.iloc[:, 1:], train.iloc[:, 0])
 
-    pickle.dump(knn, open("/img_app/models/model.pkl", "wb"))
+    pickle.dump(knn, open("img_app/models/model.pkl", "wb"))
 
 
 if __name__ == '__main__':
