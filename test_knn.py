@@ -28,14 +28,15 @@ for k in range(3, 6):
         knn = KNeighborsClassifier(n_neighbors=k)
         knn.fit(train.iloc[idxT, 1:], train.iloc[idxT, 0])
         # Better to use knn.predict() but cuML v0.11.0 has bug
-        # y_hat = knn.predict(train.iloc[idxV,1:])
-        y_hat_p = knn.predict_proba(train.iloc[idxV, 1:])
-        oof[idxV] = y_hat_p.to_pandas().values.argmax(axis=1)
+        y_hat = knn.predict(train.iloc[idxV,1:])
+        oof[idxV] = y_hat
+        # y_hat_p = knn.predict_proba(train.iloc[idxV, 1:])
+        # oof[idxV] = y_hat_p.to_pandas().values.argmax(axis=1)
         acc = (oof[idxV] == train.iloc[idxV, 0].to_array()).sum() / len(idxV)
         print(' fold =', i, ' acc =', acc, ' in ', time.time() - time_start_2)
     acc = (oof == train.iloc[:, 0].to_array()).sum() / len(train)
     print(' OOF with k =', k, 'ACC =', acc, ' in ', time.time() - time_start_1)
-
+"""
 train = pd.read_csv('./data/digit-recognizer/train.csv')
 print('train shape =', train.shape)
 
@@ -58,3 +59,4 @@ for k in range(3, 6):
         print(' fold =', i, ' acc =', acc, ' in ', time.time() - time_start_2)
     acc = (oof == train.iloc[:, 0].to_array()).sum() / len(train)
     print(' OOF with k =', k, 'ACC =', acc, ' in ', time.time() - time_start_1)
+"""
