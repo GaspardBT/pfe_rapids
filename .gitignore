@@ -129,7 +129,8 @@ dmypy.json
 .pyre/
 
 # Data
-#.data/
-
+.data/
+.url_class/datastore/
+.img_app/datastore/
 # connection
 cluster_connection.md
