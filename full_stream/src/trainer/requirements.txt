@@ -1,0 +1,4 @@
+kafka_python==2.0.2
+python-dotenv==0.15.0
+numpy==1.19.2
+scipy==1.5.2

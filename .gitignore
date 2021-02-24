@@ -127,10 +127,13 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+# pycharm
+.idea/
 
 # Data
-.data/
-.url_class/datastore/
-.img_app/datastore/
+data/
+url_class/datastore
+full_stream/datastore
+img_app/datastore
 # connection
 cluster_connection.md

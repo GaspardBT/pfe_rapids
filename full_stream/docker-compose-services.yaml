@@ -1,0 +1,23 @@
+version: "3.3"
+
+services:
+
+  mock_producer:
+    build: ./src/mock_producer
+    volumes:
+      - ./datastore:/var/datastore/
+    env_file:
+      - .env
+  trainer:
+    build: ./src/trainer
+    env_file:
+      - .env
+  kowl:
+    image: quay.io/cloudhut/kowl:v1.1.0
+    restart: on-failure
+    hostname: kowl
+    volumes:
+    - ./kowl:/etc/kowl/
+    ports:
+    - "9000:8080"
+    entrypoint: ./kowl --config.filepath=/etc/kowl/config.yaml
