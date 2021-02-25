@@ -8,6 +8,7 @@ from cuml.naive_bayes import MultinomialNB
 from sklearn.naive_bayes import MultinomialNB as Mnb
 
 from sklearn.datasets import load_svmlight_files
+from sklearn.preprocessing import MaxAbsScaler
 
 
 def load_svmlight_batched(n=1):
@@ -50,14 +51,23 @@ def main(n=1):
     a = model.score(X_test, y_train)
     print(a)
     print(total)
-    """
+
     model = Mnb()
     total = 0
+    scaler = MaxAbsScaler()
+
+    for i in range(len(data_raw)):
+        X, y = data_raw[i]
+        X = np.abs(X)
+        data_raw[i] = (X, y)
     time1 = time.time()
 
     X, y = data_raw[0]
+    # y = (y + 1) / 2
     model.partial_fit(X, y, classes=np.unique(y))
     for X, y in data_raw[1:-1]:
+        # y = (y + 1) / 2
+
         model.partial_fit(X, y)
         total += len(y)
 
@@ -68,8 +78,7 @@ def main(n=1):
     a = model.score(X_test, y_train)
     print(a)
     print(total)
-    """
 
 
 if __name__ == "__main__":
-    main(100)
+    main(120)
