@@ -5,7 +5,7 @@ services:
   mock_producer:
     build: ./src/mock_producer
     volumes:
-      - ./datastore:/var/datastore/
+      - /opt/dataset/maliciousurl:/var/datastore/
     env_file:
       - .env
   trainer:

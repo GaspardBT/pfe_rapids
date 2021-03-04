@@ -4,6 +4,8 @@ import pickle
 
 from msgHandler import MsgHandler
 
+from cuml.naive_bayes import MultinomialNB
+
 # from model import NBModel
 
 
@@ -11,10 +13,12 @@ def urlHandler(handler, url_features_topic_name, nbmodel):
     records = handler.getNextMsgBatch(topic_name=url_features_topic_name)
     if records is not None:
         for _, consumerRecords in records.items():
+
             for record in consumerRecords:
                 data = pickle.loads(record.value)
                 try:
-                    print(data)
+                    X, y = data
+
                 except Exception as e:
                     # msg to logger
                     print(e)

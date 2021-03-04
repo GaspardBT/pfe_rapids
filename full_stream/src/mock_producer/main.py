@@ -29,7 +29,7 @@ def load_svmlight_batched(n=120):
 
 
 def urlFeaturesFaker(
-    handler, url_features_topic_name, n_urls=None, interval=10, batch_size=5
+    handler, url_features_topic_name, interval=10, n_urls=None, batch_size=5
 ):
     print("Starts loading the data")
     data_raw = load_svmlight_batched(n=5)
@@ -49,9 +49,10 @@ def urlFeaturesFaker(
             handler.sendMsg(
                 topic_name=url_features_topic_name, key=None, msg=serialized_data,
             )
+        time.sleep(interval * 0.001)
 
 
-def work(handler, url_features_topic_name):
+def work(handler, url_features_topic_name, interval):
     try:
         urlFeaturesFaker(handler, url_features_topic_name)
     finally:
@@ -66,6 +67,8 @@ if __name__ == "__main__":
     kafka_group = os.getenv("TRAINER_KAFKA_GROUP")
 
     broker_list = os.getenv("BROKER_LIST")
+
+    interval = int(os.getenv("INTERVAL"))
     url_features_topic_name = "url_features"  # os.getenv("URL_FEATURES_TOPIC")
 
     consumers_attr = []
@@ -73,4 +76,4 @@ if __name__ == "__main__":
     handler = MsgHandler(broker_list, consumers_attr=consumers_attr, producer=True)
 
     print("Starts Working")
-    work(handler, url_features_topic_name)
+    work(handler, url_features_topic_name, interval)
