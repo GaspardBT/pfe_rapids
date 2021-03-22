@@ -2,16 +2,19 @@ version: "3.3"
 
 services:
 
-  mock_producer:
-    build: ./src/mock_producer
-    volumes:
-      - /opt/dataset/maliciousurl:/var/datastore/
-    env_file:
-      - .env
-  trainer:
-    build: ./src/trainer
-    env_file:
-      - .env
+  # mock_producer:
+  #   build: ./src/mock_producer
+  #   volumes:
+  #     - /opt/dataset/maliciousurl:/var/datastore/
+  #   env_file:
+  #     - .env
+  # trainer:
+  #   build: ./src/trainer
+  #   runtime: nvidia
+  #   environment:
+  #     - NVIDIA_VISIBLE_DEVICES=all
+  #   env_file:
+  #     - .env
   kowl:
     image: quay.io/cloudhut/kowl:v1.1.0
     restart: on-failure

@@ -10,6 +10,6 @@ dependencies:
   - cudatoolkit=11.0
   - pip=20.2
   - pip:
-    - -r requirements.txt
+    - -r /tmp/requirements.txt
   - python=3.8
   - rapids=0.18

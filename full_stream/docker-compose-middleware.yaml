@@ -13,4 +13,13 @@ services:
     ports:
       - "9092:9092"
     env_file:
-      - .env      
+      - .env
+  kowl:
+    image: quay.io/cloudhut/kowl:v1.1.0
+    restart: on-failure
+    hostname: kowl
+    volumes:
+    - ./kowl:/etc/kowl/
+    ports:
+    - "9000:8080"
+    entrypoint: ./kowl --config.filepath=/etc/kowl/config.yaml   
