@@ -22,6 +22,8 @@ class MsgHandler:
                 "bootstrap_servers": broker_list,
                 "auto_offset_reset": "earliest",
                 "group_id": consumer_attr["kafka_group"],
+                "fetch_max_bytes": 52428800 * 10,
+                "max_partition_fetch_bytes": 1048576 * 10,
             }
 
             # init Consumer
