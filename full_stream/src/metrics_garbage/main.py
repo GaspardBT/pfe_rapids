@@ -1,4 +1,7 @@
 import os
+import sys
+from datetime import datetime
+
 from dotenv import load_dotenv
 import pandas as pd
 from msgHandler import MsgHandler
@@ -6,6 +9,7 @@ from msgHandler import MsgHandler
 
 def work(handler, stats_topic_name, file_path):
     metrics = []
+    state = 0
     try:
         while True:
             records = handler.getNextMsgBatch(topic_name=stats_topic_name)
@@ -14,7 +18,19 @@ def work(handler, stats_topic_name, file_path):
                     for record in consumerRecords:
                         msg = handler.msg_from_record(record)
                         metrics.append(msg)
-            pd.DataFrame(metrics).to_csv(file_path, encoding="utf-8", index=False)
+                if len(records.items()) == 0 and state:
+                    print("empty" + str(datetime.now()))
+                    state = 0
+                elif len(records.items()) and state == 0:
+                    state = 1
+    except KeyboardInterrupt:
+        print("Interrupted")
+        pd.DataFrame(metrics).to_csv(file_path, encoding="utf-8", index=False)
+
+        try:
+            sys.exit(0)
+        except SystemExit:
+            os._exit(0)
     finally:
         handler.closeAll()
 
@@ -50,5 +66,6 @@ if __name__ == "__main__":
         + str(batch_size)
         + ".csv"
     )
+    print(file_path)
     print("Début de la lecture des messages")
     work(handler=handler, stats_topic_name=stats_topic_name, file_path=file_path)
