@@ -53,17 +53,23 @@ if __name__ == "__main__":
     print("Souscription aux topics")
     handler.subscribeTopics()
 
-    interval = int(os.getenv("INTERVAL"))
-    batch_size = int(os.getenv("BATCH_SIZE"))
-    n_urls_days = int(os.getenv("N_URLS_DAYS"))
+    interval = os.getenv("INTERVAL")
+    batch_size = os.getenv("BATCH_SIZE")
+    n_urls_days = os.getenv("N_URLS_DAYS")
+    model_librairy = os.getenv("MODEL_LIBRAIRY")
+    n_processes = os.getenv("N_PROCESSES")
 
     file_path = (
         "./metrics_"
-        + str(n_urls_days)
+        + model_librairy
         + "_"
-        + str(interval)
+        + n_processes
         + "_"
-        + str(batch_size)
+        + n_urls_days
+        + "_"
+        + interval
+        + "_"
+        + batch_size
         + ".csv"
     )
     print(file_path)
