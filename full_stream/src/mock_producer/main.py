@@ -2,9 +2,14 @@ import os
 from dotenv import load_dotenv
 import numpy as np
 from time import time, sleep
+from datetime import datetime
+import json
 import pickle
 from tqdm import tqdm
 
+from multiprocessing import Pool
+
+from kafka import KafkaProducer
 
 from sklearn.datasets import load_svmlight_files
 
@@ -63,12 +68,48 @@ def work(handler, url_features_topic_name, interval=10, batch_size=5, n_urls_day
         handler.closeAll()
 
 
-if __name__ == "__main__":
+def pool_worker(batch):
+    load_dotenv()
+    url_features_topic_name = os.getenv("URL_FEATURES_TOPIC")
+    stats_topic_name = os.getenv("STATS_TOPIC")
+
+    interval = int(os.getenv("INTERVAL"))
+
+    broker_list = os.getenv("BROKER_LIST")
+
+    producerProperties = {"bootstrap_servers": broker_list}
+    producer = KafkaProducer(**producerProperties, api_version=(2, 3, 0))
+    try:
+        time_start = time()
+
+        for data in batch:
+            serialized_data = pickle.dumps(data)
+            producer.send(url_features_topic_name, key=None, value=serialized_data)
+            metrics = {
+                "timestamp": str(datetime.now()),
+                "nb_url_sent": 1,
+                # "model": pickle.dumps(nbmodel),
+            }
+            producer.send(
+                stats_topic_name, key=None, value=json.dumps(metrics).encode("utf-8"),
+            )
+        time_finish = time()
+
+        time_sleep = max(0, interval - (time_finish - time_start) * 1000)
+        if time_sleep == 0:
+            print("send took to long: ", (time_finish - time_start) * 1000)
+        sleep(time_sleep * 0.001)
+    except Exception as e:
+        # msg to logger
+        print("error: ", e)
+    finally:
+        producer.close()
+
+
+def classic_main():
+
     # Chargement des variables d'environnement
     load_dotenv()
-
-    debug = os.getenv("DEBUG")
-    kafka_group = os.getenv("TRAINER_KAFKA_GROUP")
 
     broker_list = os.getenv("BROKER_LIST")
 
@@ -91,3 +132,30 @@ if __name__ == "__main__":
         n_urls_days=n_urls_days,
     )
     print("End Working")
+
+
+def pool_main():
+    load_dotenv()
+
+    p = Pool()
+
+    batch_size = int(os.getenv("BATCH_SIZE"))
+    n_urls_days = int(os.getenv("N_URLS_DAYS"))
+
+    print("Starts loading the data")
+    data_raw = load_svmlight_batched(n=n_urls_days)
+    size_data_raw = len(data_raw)
+    if n_urls_days and n_urls_days < size_data_raw:
+        pass
+    else:
+        n_urls_days = size_data_raw
+    print("Starts producing fake urls")
+    print(size_data_raw)
+    # split data in bacth
+    batchs = [data_raw[i : i + batch_size] for i in range(0, len(data_raw), batch_size)]
+    with p:
+        p.map(pool_worker, batchs)
+
+
+if __name__ == "__main__":
+    pool_main()
