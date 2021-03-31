@@ -137,10 +137,9 @@ def classic_main():
 def pool_main():
     load_dotenv()
 
-    p = Pool()
-
     batch_size = int(os.getenv("BATCH_SIZE"))
     n_urls_days = int(os.getenv("N_URLS_DAYS"))
+    n_processes = int(os.getenv("N_PROCESSES"))
 
     print("Starts loading the data")
     data_raw = load_svmlight_batched(n=n_urls_days)
@@ -153,6 +152,8 @@ def pool_main():
     print(size_data_raw)
     # split data in bacth
     batchs = [data_raw[i : i + batch_size] for i in range(0, len(data_raw), batch_size)]
+    p = Pool(processes=n_processes)
+
     with p:
         p.map(pool_worker, batchs)
 
