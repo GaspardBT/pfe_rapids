@@ -30,8 +30,7 @@ def work(handler, stats_topic_name, url_features_topic_name, nbmodel):
                         labels.append(y)
                     n = len(data)
                     time_load = time()
-                    X = sp.vstack(data, format="csr")
-                    y = cp.asarray(labels, dtype=cp.int32)
+                    X, y = nbmodel.preprocessing(data, labels)
                     try:
                         nbmodel.online_train(X, y, n)
                     except Exception as e:
@@ -42,7 +41,7 @@ def work(handler, stats_topic_name, url_features_topic_name, nbmodel):
                         "timestamp": str(datetime.now()),
                         "time_load": time_load - time_start,
                         "time_train": time_train - time_load,
-                        "size_batch": n,
+                        "size_batch_training": n,
                         # "model": pickle.dumps(nbmodel),
                     }
                     handler.sendMsg(
@@ -50,6 +49,9 @@ def work(handler, stats_topic_name, url_features_topic_name, nbmodel):
                         key=None,
                         msg=handler.serializer(metrics),
                     )
+    except Exception as e:
+        # msg to logger
+        print("error: ", e)
     finally:
         handler.closeAll()
 
@@ -64,6 +66,7 @@ if __name__ == "__main__":
     kafka_group = os.getenv("TRAINER_KAFKA_GROUP")
     url_features_topic_name = os.getenv("URL_FEATURES_TOPIC")
     stats_topic_name = os.getenv("STATS_TOPIC")
+    model_librairy = os.getenv("MODEL_LIBRAIRY")
 
     consumers_attr = [
         {"topic": url_features_topic_name, "kafka_group": kafka_group + "_url"}
@@ -76,7 +79,7 @@ if __name__ == "__main__":
     handler.subscribeTopics()
 
     print("Init Model")
-    nbmodel = NBModel()
+    nbmodel = NBModel(librairy=model_librairy)
     print("Début de la lecture des messages")
     work(
         handler=handler,
