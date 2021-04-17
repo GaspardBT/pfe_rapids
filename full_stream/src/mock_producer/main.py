@@ -88,7 +88,6 @@ def pool_worker(batch):
             metrics = {
                 "timestamp": str(datetime.now()),
                 "nb_url_sent": 1,
-                # "model": pickle.dumps(nbmodel),
             }
             producer.send(
                 stats_topic_name, key=None, value=json.dumps(metrics).encode("utf-8"),

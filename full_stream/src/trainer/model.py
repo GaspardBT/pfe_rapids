@@ -8,7 +8,7 @@ from sklearn.naive_bayes import MultinomialNB as sklearnMNB
 
 
 class NBModel(object):
-    """docstring for NBModel."""
+    """Class to overloads the model's classes from cuML and sklearn"""
 
     def __init__(self, librairy="rapids"):
         self.librairy = librairy
