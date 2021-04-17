@@ -10,7 +10,7 @@ from utils import load_image, append_to_csv, model_trainer
 app = Flask(__name__)
 
 
-@app.route('/add-image', methods=['POST'])
+@app.route("/add-image", methods=["POST"])
 def add_image():
     label = request.args.get("label", None)
     if label:
@@ -21,15 +21,17 @@ def add_image():
     return "Label not found", 400
 
 
-@app.route('/train', methods=['get'])
+@app.route("/train", methods=["get"])
 def train():
     try:
-        model_trainer(datapath="./datastore/imgdata.csv", modelpath="models/model.pkl", k=3)
+        model_trainer(
+            datapath="./datastore/imgdata.csv", modelpath="models/model.pkl", k=3
+        )
     except Exception as e:
         return str(e), 500
 
 
-@app.route('/predict', methods=['POST'])
+@app.route("/predict", methods=["POST"])
 def predict():
     if model:
         img = load_image(request)
