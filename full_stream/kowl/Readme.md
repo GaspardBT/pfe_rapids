@@ -1,1 +1,0 @@
-Nous utilisons [l'utilitaire Kowl](https://github.com/cloudhut/kowl) pour consulter facilement les messages contenus dans les topics Kafka.
