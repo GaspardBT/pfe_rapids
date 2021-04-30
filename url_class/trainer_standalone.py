@@ -8,11 +8,9 @@ from cuml.naive_bayes import MultinomialNB
 from sklearn.naive_bayes import MultinomialNB as Mnb
 
 from sklearn.datasets import load_svmlight_files
-from sklearn.preprocessing import MaxAbsScaler
 
 
-def load_svmlight_batched(n=1):
-    svmformat_file = "/opt/dataset/maliciousurl/url_svmlight/"
+def load_svmlight_batched(svmformat_file, n=1):
     files_names = []
     for i in range(n):
         files_names.append(svmformat_file + "Day" + str(i) + ".svm")
@@ -54,7 +52,6 @@ def main(n=1):
 
     model = Mnb()
     total = 0
-    scaler = MaxAbsScaler()
 
     for i in range(len(data_raw)):
         X, y = data_raw[i]
@@ -81,4 +78,5 @@ def main(n=1):
 
 
 if __name__ == "__main__":
-    main(120)
+    svmformat_file = "/opt/dataset/maliciousurl/url_svmlight/"
+    main(svmformat_file, 120)
