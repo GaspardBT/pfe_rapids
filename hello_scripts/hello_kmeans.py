@@ -33,18 +33,18 @@ def main():
         n_features=args["dataset_dimension"],
         centers=args["n_clusters"],
     )
-    time_creation_dataset = time.time() - start_time
+    time_creation_dataset = time.time()
     kmeans = KMeans(n_clusters=args["n_clusters"])
-    time_init_model = time.time() - time_creation_dataset
+    time_init_model = time.time()
     kmeans.fit(data)
-    time_compute = time.time() - time_init_model
+    time_compute = time.time()
 
     labels = kmeans.labels_
     cluster_centers = kmeans.cluster_centers_
     times = {
-        "time_creation_dataset": time_creation_dataset,
-        "time_init_model": time_init_model,
-        "time_compute": time_compute,
+        "time_creation_dataset": time_creation_dataset - start_time,
+        "time_init_model": time_init_model - time_creation_dataset,
+        "time_compute": time_compute - time_init_model,
     }
     return labels, cluster_centers, times
 
