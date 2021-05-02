@@ -48,7 +48,8 @@ if __name__ == "__main__":
         port = int(sys.argv[1])  # This is for a command-line input
     except:
         port = 12345  # If you don't provide any port the port will be set to 12345
-
-    model = pickle.load(open("models/model.pkl", "rb"))
-
+    try:
+        model = pickle.load(open("models/model.pkl", "rb"))
+    except:
+        print("No existing model")
     app.run(port=port, debug=True)
