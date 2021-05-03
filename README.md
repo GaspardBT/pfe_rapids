@@ -29,6 +29,14 @@ Run the app with: `python app.py`
 You can pretrained the model with the `model_maker.py` script, make sure to properly set the dataset path.
 ## Urls Classification
 
+Set the rigth dataset path and launch the script using `python trainer_standalone.py`
 ## Full Stream
+ - Set the right dataset path in this [script](full_stream/src/mock_producer/main.py).
+ - Be sure to have Kafka running you can follow [this](full_stream/command.md)
+ - Launch the mock producer `python src/mock_producer/main.py` 
+ - Launch the trainer `python src/trainer/main.py`
+ - Launch the metric collector `python src/metrics_garbage/main.py`
+
 
 ## Metrics Analysis
+Notebooks to plot metrics analysis.
